@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import TodoList from '../components/TodoList'
 import Logo from "../images/LogoMiguelSanchez2.png"
 import { todosData } from '../data/todos'
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
   //ordenamos los items de la lista, para pasar al final los isCompleted
@@ -11,6 +12,8 @@ const Home = () => {
   );
   //controlamos el boton HideCompleteds
   const [isHidden, setIsHidden] = useState(false);
+
+  const navigation = useNavigation();
 
   const handleHideCompleted = () => {
     //si el estado es isHidden, reinicia localData. en caso contrario, solo muestra los isCompleted en false
@@ -38,7 +41,7 @@ const Home = () => {
       <TodoList todosData = { localData.filter(todo => todo.isToday) }/>
       <Text style = { styles.title }>Tomorrow</Text>
       <TodoList todosData = { todosData.filter(todo => !todo.isToday) }/>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("AddTask")}>
         <Text style={styles.plus}>+</Text>
       </TouchableOpacity>
     </View>
@@ -51,11 +54,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 15,
-    paddingTop: 20,
+    paddingTop: 5,
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
     borderRadius: 50,
     alignSelf: 'flex-end',
   },
