@@ -4,7 +4,7 @@ const initialState = {
   todos: [],
 }
 
-export default todoSlice = createSlice({
+export const todosSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
@@ -16,7 +16,30 @@ export default todoSlice = createSlice({
       state.todos.push(action.payload)
     },
     hideCompileReducer:(state) => {
-      state.todos.filter(todo => todo.isCompleted === false)
+      state.todos = state.todos.filter(todo => !todo.isCompleted)
+    },
+    updateTodoReducer: (state, action) => {
+      const index = state.todos.map(todo => {
+        if(todo.id === action.payload.id) {
+          todo.isCompleted = !todo.isCompleted
+        }
+        return todo;
+      })
+    },
+    deleteTodoReducer:(state, action) => {
+      const id = action.payload;
+      const todos = state.todos.filter(todo => todo.id !== id)
+      state.todos = todos;
     },
   }
-})
+});
+
+export const {
+  setTodosReducer,
+  addTodoReducer,
+  hideCompileReducer,
+  updateTodoReducer,
+  deleteTodoReducer,  
+} = todosSlice.actions;
+
+export default todosSlice.reducer;

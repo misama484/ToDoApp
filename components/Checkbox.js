@@ -1,12 +1,40 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import React from 'react';
+import { updateTodoReducer } from '../redux/todosSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 
 const Checkbox = ({id, text, isCompleted, isToday, hour}) => {
   //evalua la propiedad isToday y renderiza el correspondiente
+  const dispatch = useDispatch();
+  const listTodos = useSelector(state => state.todos.todos);
+
+  const handleCheckbox = () => {
+    try{
+      //llamamos a la funcion y le pasamos los payloads necesarios
+      dispatch(updateTodoReducer({id, isCompleted}));
+      //guardamos en el storage, como ya hemos pasado la linea de listTodos(14), la lista no se ha actualizado todavia, asi que la actualizamos
+      AsyncStorage.setItem("@Todos", JSON.stringify(
+        listTodos.map(todo => {
+          //si el id es igual al id de la lista, cambiamos la propiedad isCompleted
+          if(todo.id === id){
+            return {...todo, isCompleted: !isCompleted}
+          }
+            return todo;
+        })
+      ))
+      console.log("Save ok");
+    } catch (e){ 
+      console.log(e); 
+    }
+  }
+
   return isToday ? (
-    <TouchableOpacity style={isCompleted ? styles.checked : styles.unChecked}>
+    <TouchableOpacity style={isCompleted ? styles.checked : styles.unChecked} onPress={handleCheckbox}>
        {isCompleted && <Icon name="check" size = {14} color="#fff"/>}       
     </TouchableOpacity>
   ) : (
